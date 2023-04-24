@@ -22,13 +22,13 @@ function TableBody(props) {
         </td>
       </tr>
     );
-   }
+  }
   );
   return (
       <tbody>
         {rows}
-       </tbody>
-   );
+      </tbody>
+  );
 }
 
 
