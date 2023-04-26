@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const port = 8000;
+const cors = require('cors');
 const users = { 
   users_list :
   [
@@ -32,6 +33,7 @@ const users = {
   ]
 }
 
+app.use(cors());
 app.use(express.json());
 
 app.get('/', (req, res) => {
@@ -49,6 +51,27 @@ app.get('/users', (req, res) => {
       res.send(users);
   }
 });
+
+const findUserByName = (name) => { 
+  return users['users_list'].filter( (user) => user['name'] === name); 
+}
+
+app.get('/users:job', (req, res) => {
+  const job = req.query.job;
+
+  if (name != undefined & job != undefined){
+      let result = findUserByName(job);
+      result = {users_list: result};
+      res.send(result);
+  }
+  else{
+      res.send(users);
+  }
+})
+
+const findUserByJob = (job) => { 
+  return users['users_list'].filter( (user) => user['job'] === job); 
+}
 
 app.get('/users/:id', (req, res) => {
   const id = req.params['id']; //or req.params.id
@@ -76,6 +99,16 @@ function addUser(user){
   users['users_list'].push(user);
 }
 
+app.delete('/users:id', (req, res) => {
+  const id = req.params['id']; //or req.params.id
+  let result = findUserById(id);
+  if (result === undefined || result.length == 0)
+      res.status(404).send('Resource not found.');
+  else {
+      result = {users_list: result};
+      res.delete(result);
+  }
+})
 
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`);
