@@ -16,7 +16,9 @@ function MyApp() {
   async function makePostCall(person){
     try {
        const response = await axios.post('http://localhost:8000/users', person);
-       return response;
+       if (response.status === 201) {
+        return response.data.users_list;
+       }
     }
     catch (error) {
        console.log(error);
@@ -32,18 +34,28 @@ function MyApp() {
   }
   return (
     <div className="container">
-      <Table characterData={characters} removeCharacter={removeOneCharacter} />
+      <Table characterData={characters} removeCharacter={removeOneCharacter} deleteUser={deleteUser} />
       <Form handleSubmit={updateList} />
     </div>
   )
   
-  function updateList(person) { 
-    makePostCall(person).then( result => {
-    if (result && result.status === 200)
+async function updateList(person) { 
+  const result = await makePostCall(person);
+  if (result && result.status === 201)
        setCharacters([...characters, person] );
-    });
- }
+};
 
+async function deleteUser(id) {
+  try {
+    const response = await axios.delete('http://localhost:8000/users:id');
+    if (response.status === 204) {
+      setCharacters(characters.filter(character => character.id !== id));
+    }
+  }
+  catch (error) {
+    console.log(error);
+  }
+}
   async function fetchAll(){
     try {
        const response = await axios.get('http://localhost:8000/users');
