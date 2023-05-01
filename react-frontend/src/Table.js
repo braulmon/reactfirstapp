@@ -16,9 +16,9 @@ function TableBody(props) {
   const rows = props.characterData.map((row, index) => {
     return (
       <tr key={index}>
+        <td>{row.id}</td>
         <td>{row.name}</td>
         <td>{row.job}</td>
-        <td>{row.id}</td>
         <td>
           <button onClick={() => {
             props.deleteUser(row.id);
